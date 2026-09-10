@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Meoow" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#FFF7ED</item>
+        <item name="android:navigationBarColor">#FFF7ED</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#FFF7ED</item>
+    </style>
+</resources>

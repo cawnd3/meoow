@@ -1,0 +1,6 @@
+<resources>
+    <color name="meoow_bg">#FFF7ED</color>
+    <color name="meoow_ink">#3B2618</color>
+    <color name="meoow_accent">#C7410F</color>
+    <color name="ic_launcher_background">#C7410F</color>
+</resources>

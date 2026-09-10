@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Meoow</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo mini" aria-label="Meoow">
+      <span class="gl gl-1">M</span><span class="gl gl-r">e</span><span class="gl gl-y">o</span><span class="gl gl-g">o</span><span class="gl gl-b">w</span>
+    </div>
+    <div class="tb-actions">
+      <button id="tb-book" class="tb-btn" title="Закладки">★</button>
+      <button id="tb-hist" class="tb-btn" title="История">🕘</button>
+      <button id="tb-set" class="tb-btn" title="Настройки">⚙</button>
+    </div>
+  </header>
+
+  <main id="view">
+
+    <section id="home">
+      <div class="hero">
+        <div class="logo big" aria-label="Meoow">
+          <span class="gl gl-1">M</span><span class="gl gl-r">e</span><span class="gl gl-y">o</span><span class="gl gl-g">o</span><span class="gl gl-b">w</span>
+        </div>
+        <div class="tagline">поиск · закладки · без лишнего</div>
+      </div>
+
+      <div class="search-wrap">
+        <form id="search-form">
+          <input id="q" type="text" autocomplete="off" placeholder="Поиск в Meoow" enterkeyhint="search">
+          <button type="submit" class="go-btn" aria-label="Искать">⌕</button>
+        </form>
+        <div id="suggest" class="suggest hidden"></div>
+      </div>
+
+      <div class="modes">
+        <button class="mode active" data-mode="web">Все</button>
+        <button class="mode" data-mode="images">Картинки</button>
+        <button class="mode" data-mode="videos">Видео</button>
+      </div>
+
+      <section class="dial-block">
+        <div class="d-title">Часто посещаемые</div>
+        <div id="dial" class="dial"></div>
+      </section>
+    </section>
+
+    <section id="results" class="hidden">
+      <div id="res-head" class="res-head"></div>
+      <div id="res-list" class="res-list"></div>
+      <div id="res-empty" class="res-empty"></div>
+    </section>
+  </main>
+
+  <div id="panel" class="panel hidden">
+    <div class="panel-backdrop"></div>
+    <div class="sheet">
+      <div id="sheet-head" class="sheet-head"></div>
+      <div id="sheet-body" class="sheet-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

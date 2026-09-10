@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; script-src 'self';">
+  <title>Meoow Browser</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="tab-bar"><button id="tab-add-btn" class="tab-add-btn" data-i18n-title="tabAdd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+
+  <div id="toolbar">
+    <button id="btn-back" class="nav-btn" data-i18n-title="back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button id="btn-forward" class="nav-btn" data-i18n-title="forward"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button id="btn-reload" class="nav-btn" data-i18n-title="reload"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
+    <button id="btn-home" class="nav-btn" data-i18n-title="homeBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/></svg></button>
+    <button id="btn-fs" class="nav-btn" data-i18n-title="fsBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+
+    <form id="address-form" autocomplete="off">
+      <svg class="addr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21 L16.5 16.5"></path></svg>
+      <input id="address-bar" type="text" data-i18n-ph="addressPh" spellcheck="false">
+      <div id="addr-suggest" class="addr-suggest hidden"></div>
+    </form>
+
+    <button id="btn-star" class="nav-btn star" data-i18n-title="starBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></button>
+    <button id="btn-profile" class="nav-btn profile-chip" data-i18n-title="profileBtn"><span class="profile-avatar" id="profile-avatar"></span><span class="profile-name" id="profile-name"></span></button>
+    <button id="btn-ai" class="nav-btn" data-i18n-title="aiBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="M12 7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z"/></svg></button>
+    <button id="btn-menu" class="nav-btn" data-i18n-title="menuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+
+  <div id="bookmark-bar"></div>
+
+  <div id="content">
+    <div id="findbar" class="findbar hidden">
+      <input id="find-input" data-i18n-ph="findPh">
+      <button id="find-prev" class="fbtn" type="button" data-i18n-title="findPrev">▲</button>
+      <button id="find-next" class="fbtn" type="button" data-i18n-title="findNext">▼</button>
+      <span id="find-status" class="find-status"></span>
+      <button id="find-close" class="fbtn" type="button" data-i18n-title="findClose">✕</button>
+    </div>
+    <div id="search-page" class="search-page">
+    <div id="sp-home" class="sp-home">
+      <div class="m-header">
+        <button class="m-link" data-action="bookmarks" type="button" data-i18n="headerBookmarks"></button>
+        <button class="m-link" data-action="history" type="button" data-i18n="headerHistory"></button>
+        <button class="m-link" data-action="settings" type="button" data-i18n="headerSettings"></button>
+      </div>
+
+      <div class="g-logo-wrap">
+        <div class="g-logo" aria-label="Meoow">
+          <span class="gl-1">M</span><span class="gl-r">e</span><span class="gl-y">o</span><span class="gl-g">o</span><span class="gl-b">w</span>
+        </div>
+      </div>
+
+      <div class="sp-search">
+        <div class="sp-search-row">
+          <svg class="sg-icon g-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21 L16.5 16.5"></path></svg>
+          <input id="nt-search" autocomplete="off" spellcheck="false" role="combobox" data-i18n-ph="searchPh">
+        </div>
+        <div id="sg-home" class="sg-box hidden"></div>
+      </div>
+
+      <div class="sp-engine" id="sp-engine"><span class="sp-engine-dot">⌕</span><span id="sp-engine-name"></span></div>
+
+      <div id="sp-visited" class="sp-visited hidden">
+        <div class="sp-visited-title" data-i18n="recentSites"></div>
+        <div id="sp-visited-list"></div>
+      </div>
+    </div>
+
+    <div id="sp-results" class="sp-results hidden">
+      <div class="sp-head">
+        <div class="sp-mini-logo" aria-label="Meoow">
+          <span class="gl-1">M</span><span class="gl-r">e</span><span class="gl-y">o</span><span class="gl-g">o</span><span class="gl-b">w</span>
+        </div>
+        <form id="sp-form" class="sp-form" autocomplete="off">
+          <svg class="sg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21 L16.5 16.5"></path></svg>
+          <input id="sp-search" autocomplete="off" spellcheck="false" role="combobox" data-i18n-ph="searchPh">
+        </form>
+        <div id="sg-results" class="sg-box hidden"></div>
+      </div>
+      <div class="sp-modes">
+        <button type="button" class="sp-mode active" data-mode="web" data-i18n="modeAll"></button>
+        <button type="button" class="sp-mode" data-mode="images" data-i18n="modeImages"></button>
+        <button type="button" class="sp-mode" data-mode="videos" data-i18n="modeVideos"></button>
+      </div>
+      <div id="sp-body" class="sp-body">
+        <div id="sp-status" class="sp-status hidden"></div>
+        <div id="sp-list" class="sp-list"></div>
+        <div id="sp-image-grid" class="sp-image-grid hidden"></div>
+        <div id="sp-video-grid" class="sp-video-grid hidden"></div>
+      </div>
+    </div>
+
+    <div class="g-footer">
+      <div class="g-footer-country">Meoow Search</div>
+      <div class="g-footer-links">
+        <div class="g-footer-left">
+          <span class="g-flink" data-action="history" data-i18n="footerHistory"></span>
+        </div>
+        <div class="g-footer-right">
+          <span class="g-flink" data-action="settings" data-i18n="footerSettings"></span>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div id="settings" class="hidden">
+      <div class="manager-header">
+        <button id="settings-close">✖</button>
+        <div class="manager-tabs">
+          <button class="mgr-tab active" data-i18n="settingsTitle"></button>
+        </div>
+      </div>
+      <div id="settings-body">
+        <div class="set-section">
+          <div class="set-section-title" data-i18n="secGeneral"></div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="searchEngine"></div><div class="set-desc" data-i18n="searchEngineDesc"></div></div>
+            <select id="set-engine">
+              <option value="auto" data-i18n="engineAuto"></option>
+              <option value="google">Google</option>
+              <option value="yandex" data-i18n="engineYandex"></option>
+              <option value="bing">Microsoft Bing</option>
+              <option value="duckduckgo">DuckDuckGo</option>
+              <option value="lite">DuckDuckGo Lite</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="newTab"></div><div class="set-desc" data-i18n="newTabDesc"></div></div>
+            <select id="set-newtab">
+              <option value="search" data-i18n="newTabSearch"></option>
+              <option value="blank" data-i18n="newTabBlank"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="set-section">
+          <div class="set-section-title" data-i18n="secAppearance"></div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="lang"></div><div class="set-desc" data-i18n="langDesc"></div></div>
+            <select id="set-lang"></select>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="theme"></div><div class="set-desc" data-i18n="themeDesc"></div></div>
+            <select id="set-theme">
+              <option value="light" data-i18n="themeLight"></option>
+              <option value="dark" data-i18n="themeDark"></option>
+              <option value="ocean" data-i18n="themeOcean"></option>
+              <option value="forest" data-i18n="themeForest"></option>
+              <option value="rose" data-i18n="themeRose"></option>
+              <option value="midnight" data-i18n="themeMidnight"></option>
+              <option value="custom" data-i18n="themeCustom"></option>
+            </select>
+          </div>
+          <div class="set-row" id="set-custom-row">
+            <div class="set-label"><div class="set-title" data-i18n="customBg"></div></div>
+            <input type="color" id="set-custom-bg" value="#f6eee0">
+          </div>
+          <div class="set-row" id="set-custom-accent-row">
+            <div class="set-label"><div class="set-title" data-i18n="customAccent"></div></div>
+            <input type="color" id="set-custom-accent" value="#c7410f">
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="pageZoom"></div><div class="set-desc" data-i18n="pageZoomDesc"></div></div>
+            <select id="set-zoom">
+              <option value="100">100%</option>
+              <option value="110">110%</option>
+              <option value="125">125%</option>
+              <option value="150">150%</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="scrollbar"></div><div class="set-desc" data-i18n="scrollbarDesc"></div></div>
+            <label class="switch"><input type="checkbox" id="set-scrollbar"><span class="slider"></span></label>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="darkSites"></div><div class="set-desc" data-i18n="darkSitesDesc"></div></div>
+            <label class="switch"><input type="checkbox" id="set-darksites"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="set-section">
+          <div class="set-section-title" data-i18n="secPrivacy"></div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="scam"></div><div class="set-desc" data-i18n="scamDesc"></div></div>
+            <label class="switch"><input type="checkbox" id="set-scam"><span class="slider"></span></label>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="notif"></div><div class="set-desc" data-i18n="notifDesc"></div></div>
+            <label class="switch"><input type="checkbox" id="set-notif"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="set-section">
+          <div class="set-section-title" data-i18n="secAI"></div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="aiFree"></div><div class="set-desc" data-i18n="aiFreeDesc"></div></div>
+            <label class="switch"><input type="checkbox" id="set-ai-free"><span class="slider"></span></label>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="aiEndpoint"></div><div class="set-desc" data-i18n="aiEndpointDesc"></div></div>
+            <input type="text" id="set-ai-endpoint" placeholder="https://api.groq.com/openai/v1" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="aiKey"></div><div class="set-desc" data-i18n="aiKeyDesc"></div></div>
+            <input type="password" id="set-ai-key" placeholder="sk-…" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="aiModel"></div><div class="set-desc" data-i18n="aiModelDesc"></div></div>
+            <input type="text" id="set-ai-model" placeholder="gpt-4o-mini" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="set-row">
+            <div class="set-title" style="font-weight:400;color:var(--muted);font-size:13px;" data-i18n="aiNote"></div>
+          </div>
+          <div class="set-actions">
+            <button id="set-ai-save" class="sp-btn" data-i18n="saveAiKey"></button>
+          </div>
+        </div>
+
+        <div class="set-section" id="sec-account">
+          <div class="set-section-title" data-i18n="secAccount"></div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="accServer"></div><div class="set-desc" data-i18n="accServerDesc"></div></div>
+            <input type="text" id="acc-server" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="accStatus"></div><div class="set-desc" id="acc-status-line"></div></div>
+          </div>
+          <div id="acc-auth">
+            <div class="set-row">
+              <div class="set-label"><div class="set-title" data-i18n="accEmail"></div></div>
+              <input type="email" id="acc-email" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="set-row">
+              <div class="set-label"><div class="set-title" data-i18n="accPassword"></div></div>
+              <input type="password" id="acc-password" autocomplete="off">
+            </div>
+            <div class="set-row">
+              <div class="set-label"><div class="set-title" data-i18n="accProfileName"></div></div>
+              <input type="text" id="acc-reg-name" maxlength="60" spellcheck="false">
+            </div>
+            <div class="set-actions">
+              <button id="acc-register" class="sp-btn" data-i18n="accRegister"></button>
+              <button id="acc-login" class="sp-btn" data-i18n="accLogin"></button>
+            </div>
+          </div>
+          <div id="acc-logged" class="hidden">
+            <div class="acc-email-line" id="acc-email-line"></div>
+            <div class="set-actions">
+              <button id="acc-logout" class="sp-btn" data-i18n="accLogout"></button>
+            </div>
+          </div>
+          <div class="set-row">
+            <div class="set-label"><div class="set-title" data-i18n="accProfiles"></div><div class="set-desc" data-i18n="accProfilesDesc"></div></div>
+            <div class="set-actions">
+              <button id="acc-edit-profiles" class="sp-btn" data-i18n="accEditProfiles"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="set-section">
+          <div class="set-section-title" data-i18n="secData"></div>
+          <div class="set-actions">
+            <button id="set-clear-data" class="sp-btn danger" data-i18n="clearData"></button>
+            <button id="set-reset" class="sp-btn" data-i18n="resetSettings"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="profiles" class="hidden">
+    <div class="manager-header">
+      <button id="profiles-close">✖</button>
+      <div class="manager-tabs">
+        <button class="mgr-tab active" data-i18n="profilesTitle"></button>
+      </div>
+    </div>
+    <div id="profiles-body">
+      <div class="set-section">
+        <div class="set-section-title" data-i18n="accProfiles"></div>
+        <div class="profiles-intro" data-i18n="accProfilesDesc"></div>
+        <div id="prof-profiles" class="acc-profiles"></div>
+        <div class="set-actions">
+          <button id="prof-add" class="sp-btn" data-i18n="accAddProfile"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="scam-overlay" class="hidden">
+    <div class="scam-box">
+      <div class="scam-icon">⚠</div>
+      <h2 data-i18n="scamTitle"></h2>
+      <p data-i18n="scamBody"></p>
+      <div class="scam-url"></div>
+      <div class="scam-note" data-i18n="scamNote"></div>
+      <div class="scam-actions">
+        <button type="button" id="scam-back" class="sp-btn" data-i18n="scamBack"></button>
+        <button type="button" id="scam-proceed" class="sp-btn danger" data-i18n="scamProceed"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="menu-popup" class="hidden">
+    <button id="menu-bookmarks" data-i18n="menuBookmarks"></button>
+    <button id="menu-history" data-i18n="menuHistory"></button>
+    <button id="menu-clear-history" data-i18n="menuClearHistory"></button>
+    <button id="menu-settings" data-i18n="menuSettings"></button>
+    <button id="menu-print" data-i18n="menuPrint"></button>
+    <button id="menu-ua" data-i18n="menuUA"></button>
+    <button id="menu-quit" data-i18n="menuQuit"></button>
+  </div>
+
+  <div id="profile-popup" class="hidden">
+    <div id="profile-pop-list"></div>
+    <div class="profile-pop-footer">
+      <button id="profile-pop-add" data-i18n="accAddProfile"></button>
+      <button id="profile-pop-manage" data-i18n="profilesTitle"></button>
+      <button id="profile-pop-lock" data-i18n="accLock"></button>
+    </div>
+  </div>
+
+  <div id="pin-gate" class="hidden">
+    <div class="pin-gate-card">
+      <div class="pin-gate-avatar" id="pin-gate-avatar"></div>
+      <h2 data-i18n="pinTitle"></h2>
+      <p class="pin-gate-sub" data-i18n="pinSubtitle"></p>
+      <input id="pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" spellcheck="false" class="pin-input">
+      <div class="pin-gate-error" id="pin-gate-error"></div>
+      <div class="set-actions">
+        <button id="pin-unlock" class="sp-btn" data-i18n="pinUnlock"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="manager" class="hidden">
+    <div class="manager-header">
+      <button id="manager-close">✖</button>
+      <div class="manager-tabs">
+        <button id="mgr-tab-book" class="mgr-tab active" data-i18n="mgrBookmarks"></button>
+        <button id="mgr-tab-hist" class="mgr-tab" data-i18n="mgrHistory"></button>
+      </div>
+    </div>
+    <div id="manager-list"></div>
+  </div>
+
+  <div id="ai-panel" class="hidden">
+    <div class="ai-head">
+      <div class="ai-logo">✦</div>
+      <div>
+        <div class="ai-title" data-i18n="aiTitle"></div>
+        <div class="ai-sub" data-i18n="aiSub"></div>
+      </div>
+      <button id="ai-close" data-i18n-title="aiClose">✕</button>
+    </div>
+    <div id="ai-messages"></div>
+    <div class="ai-input-row">
+      <input id="ai-input" type="text" data-i18n-ph="aiInput" autocomplete="off" spellcheck="false">
+      <button id="ai-send" data-i18n-title="aiSend">➤</button>
+    </div>
+  </div>
+
+  <script src="lang.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

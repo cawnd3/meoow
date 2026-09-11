@@ -2110,6 +2110,7 @@ function setupEvents() {
   });
 
   // Menu
+  $('#btn-dev').addEventListener('click', () => window.meoow.openDevWindow());
   $('#btn-menu').addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
   $('#menu-bookmarks').addEventListener('click', () => { openManager('bookmarks'); toggleMenu(); });
   $('#menu-history').addEventListener('click', () => { openManager('history'); toggleMenu(); });

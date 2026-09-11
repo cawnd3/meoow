@@ -385,7 +385,7 @@ function route(req, res) {
         settings: {}, bookmarks: [], history: [],
       };
       const token = makeToken();
-      sessionsDb.data[token] = { userId: uid, expiresAt: Date.now() + SESSION_TTL_MS };
+      sessionsDb.data[token] = { userId: uid, createdAt: Date.now(), expiresAt: Date.now() + SESSION_TTL_MS };
       writeDb(usersDb); writeDb(profilesDb); writeDb(sessionsDb);
       respond(200, { token, user: { id: uid, email }, profile: meta(pid) });
     }).catch((e) => respond(400, { error: 'Ошибка запроса: ' + e.message }));
@@ -560,6 +560,48 @@ function route(req, res) {
     return;
   }
 
+  // Dev: активные пользователи (только с localhost)
+  if (pathName === '/api/dev/active' && method === 'GET') {
+    const ip = req.socket.remoteAddress || '';
+    if (ip !== '127.0.0.1' && ip !== '::1' && ip !== '::ffff:127.0.0.1') {
+      respond(403, { error: 'Раздел разработчика доступен только с localhost.' });
+      return;
+    }
+    const now = Date.now();
+    const users = [];
+    const seen = {};
+    for (const token in sessionsDb.data) {
+      const s = sessionsDb.data[token];
+      if (!s || s.expiresAt < now || !usersDb.data[s.userId]) continue;
+      if (seen[s.userId]) continue;
+      seen[s.userId] = true;
+      const profiles = [];
+      for (const pid in profilesDb.data) {
+        const p = profilesDb.data[pid];
+        if (p.userId !== s.userId) continue;
+        profiles.push({ name: p.name, color: p.color, hasPin: !!p.pinHash, updatedAt: p.updatedAt });
+      }
+      users.push({
+        id: s.userId,
+        email: usersDb.data[s.userId].email,
+        tokenPrefix: token.slice(0, 8),
+        createdAt: s.createdAt || (s.expiresAt - SESSION_TTL_MS),
+        expiresAt: s.expiresAt,
+        profiles,
+      });
+    }
+    users.sort((a, b) => b.createdAt - a.createdAt);
+    respond(200, {
+      ok: true,
+      now,
+      activeCount: users.length,
+      totalUsers: Object.keys(usersDb.data).length,
+      server: { port: PORT, dataDir: DATA_DIR },
+      users,
+    });
+    return;
+  }
+
   respond(404, { error: 'Не найдено.' });
 }
 
@@ -570,7 +612,7 @@ loadDb(codesDb);
 function createSessionAndRespond(respond, email) {
   const user = findUserByEmail(email);
   const token = makeToken();
-  sessionsDb.data[token] = { userId: user.id, expiresAt: Date.now() + SESSION_TTL_MS };
+  sessionsDb.data[token] = { userId: user.id, createdAt: Date.now(), expiresAt: Date.now() + SESSION_TTL_MS };
   writeDb(sessionsDb);
   const profiles = [];
   for (const pid in profilesDb.data) {

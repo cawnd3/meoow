@@ -452,11 +452,41 @@ function createWindow() {
 
   win.on('page-title-updated', (ev) => { ev.preventDefault(); });
 
+  win.on('closed', () => {
+    if (devWin && !devWin.isDestroyed()) { devWin.close(); devWin = null; }
+  });
+
   win.webContents.on('console-message', (e, level, message) => {
     if (level >= 3) console.error('[renderer] ' + message);
   });
 
   runSmokeIfEnabled();
+}
+
+// ---------- Dev-окно «Активные пользователи» ----------
+let devWin = null;
+function openDevWindow() {
+  if (devWin && !devWin.isDestroyed()) { devWin.show(); devWin.focus(); return; }
+  devWin = new BrowserWindow({
+    width: 540,
+    height: 660,
+    minWidth: 380,
+    minHeight: 420,
+    icon: path.join(__dirname, 'src', 'icons', 'icon.png'),
+    title: 'Meoow · Активные пользователи (dev)',
+    backgroundColor: '#fff7ed',
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
+    },
+  });
+  devWin.loadFile(path.join(__dirname, 'src', 'dev.html'));
+  devWin.webContents.on('console-message', (e, level, message) => {
+    if (level >= 3) console.error('[dev-win] ' + message);
+  });
+  devWin.on('closed', () => { devWin = null; });
 }
 
 // ---------- Профили (как в Chrome) и аккаунт ----------
@@ -752,6 +782,9 @@ app.whenReady().then(() => {
   });
   hookDownloads(session.defaultSession);
   createWindow();
+  if (process.argv.includes('--dev-active')) {
+    setTimeout(openDevWindow, 900);
+  }
   initUpdater();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -937,6 +970,16 @@ ipcMain.handle('browser:search', async (e, query) => {
 ipcMain.handle('browser:suggest', async (e, query) => {
   return getSuggestions(query);
 });
+
+// ---------- Dev: активные пользователи ----------
+ipcMain.handle('browser:dev-active-users', async () => {
+  try {
+    return await apiCall('GET', '/api/dev/active', undefined, { auth: false });
+  } catch (e) {
+    return { ok: false, error: e.message || String(e), serverUrl: account.serverUrl || DEFAULT_SERVER_URL };
+  }
+});
+ipcMain.on('browser:open-dev-window', () => openDevWindow());
 
 // ---------- Image search (Bing images async, no API key) ----------
 async function searchImages(query) {

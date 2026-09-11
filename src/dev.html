@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+  <title>Meoow · Активные пользователи</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fff7ed; --surface: #fffdf7; --surface2: #f6eee0;
+      --ink: #3b2618; --muted: #9a8570; --accent: #c7410f; --border: #ecd9bd;
+    }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg); color: var(--ink); padding: 12px 14px;
+      overflow-y: auto;
+    }
+    .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .head h1 { font-size: 15px; font-weight: 800; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+    .dot.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+    .counts { margin-left: auto; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .counts b { color: var(--accent); font-size: 14px; }
+    .hint { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(120,60,20,.06);
+    }
+    .card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .email { font-weight: 700; font-size: 13.5px; }
+    .token { font-family: Consolas, monospace; font-size: 11px; color: var(--muted); background: var(--surface2); border-radius: 6px; padding: 1px 6px; }
+    .times { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+    .profiles { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface2); border-radius: 999px; padding: 3px 10px 3px 6px; font-size: 12px;
+    }
+    .pdot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .locked { font-size: 11px; color: var(--muted); }
+    .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: 13px; }
+    .errbox { text-align: center; color: #b03018; padding: 30px 10px; font-size: 13px; line-height: 1.6; }
+    .errbox .url { font-family: Consolas, monospace; color: var(--muted); font-size: 11px; word-break: break-all; }
+    .foot { text-align: center; color: var(--muted); font-size: 11px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <span class="dot" id="status-dot"></span>
+    <h1>Активные пользователи Meoow</h1>
+    <span class="counts" id="counts"></span>
+  </div>
+  <div class="hint" id="hint"></div>
+  <div id="list"><div class="empty">Загрузка…</div></div>
+  <div class="foot" id="foot"></div>
+  <script src="dev.js"></script>
+</body>
+</html>

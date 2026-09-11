@@ -43,4 +43,7 @@ contextBridge.exposeInMainWorld('meoow', {
   profileLock: (opts) => ipcRenderer.invoke('browser:profile-lock', opts),
   profileSetPin: (opts) => ipcRenderer.invoke('browser:profile-set-pin', opts),
   profileUnlock: (opts) => ipcRenderer.invoke('browser:profile-unlock', opts),
+
+  devActiveUsers: () => ipcRenderer.invoke('browser:dev-active-users'),
+  openDevWindow: () => ipcRenderer.send('browser:open-dev-window'),
 });
